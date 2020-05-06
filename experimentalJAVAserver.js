@@ -25,33 +25,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-// below code can be used for restrict access for cross origin
-// app.use(
-//   cors({
-//     origin: [
-//       `${process.env.FRONT_URL}`,
-//       'http://localhost:3000',
-//       'https://mypage.com',
-//     ],
-//     credentials: true
-//   })
-// );
 app.use(cookieParser());
 
-
-
-
-//this is used to create a session of every request so that session details 
-//can be made available in each and every api 
-//by accessing req.session or req.sessionOptions
-// app.use(cookieSession({
-//   name: 'session',
-//   keys: ["seckretkey"],
-
-//   // Cookie Options
-//   maxAge:  process.env.NODE_ENV=="development"? 1000 : 30*60*1000, // 30 minutes
-//   httpOnly:false   
-// }));
 
 
 

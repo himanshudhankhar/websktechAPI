@@ -9,8 +9,8 @@ const jwt = require('jsonwebtoken');
 var forwardRequests =require('./forwardRequests');
 
 var verifyToken =require('./verifyJWT');
-
-require('dotenv').config({path:path.join(__dirname, '.env')}); //to load variables in process.env from a .env file
+//to load variables in process.env from a .env file
+require('dotenv').config({path:path.join(__dirname, '.env')}); 
 
  
 app.use(bodyParser.json());
@@ -38,9 +38,7 @@ next();
 
 
 app.post('/user/authenticate',(req,res)=>{
-  // console.log('data',req.body);
-//after validation of data from req.body this can be used 
-
+  
 var id="1234";
 var firstname="Himanshu";
 var creationTime = new Date().getTime();
@@ -65,10 +63,11 @@ res.send({
 
 });
 
-
-app.use(verifyToken); // All requests below this code will be accessed with a certified token only
+// All requests below this code will be accessed with a certified token only
+app.use(verifyToken); 
 
 app.use(express.static(path.join(__dirname, 'build')));
+
 
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -88,12 +87,6 @@ app.get('/ping',(req,res)=>{
 
  
 
-
-//All requests except the above ones will have to verify the token 
-
-
-//all requests except the above ones should be forwarded to the java spring server
-//so that there can be some communication between the two
 
 
   

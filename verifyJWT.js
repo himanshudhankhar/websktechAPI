@@ -8,7 +8,7 @@ const verifyToken = async function(req, res, next)  {
 console.log(fullUrl);
 
 
-if(fullUrl=='/login'||fullUrl=='/register'||fullUrl=="/"||fullUrl=="/user/authenticate"||fullUrl.substr(1,6)=="static"){
+if(fullUrl=='/login'||fullUrl=='/register'||fullUrl=="/"||fullUrl=="/user/authenticate"||fullUrl.substr(1,6)=="static"||fullUrl=="/reset"||fullUrl=="/forgot"||fullUrl=="/activate"){
     next();
     return;
 }
