@@ -16,7 +16,7 @@ if(fullUrl=='/login'||fullUrl=='/register'||fullUrl=="/"||fullUrl=="/user/authen
 
 
     console.log("verify token was called");
-  const token = req.signedCookies.token ;
+  const token = req.cookies.token ;
   console.log(req.headers,token,req.session);
   try {
     if (!token) {
@@ -33,6 +33,7 @@ if(fullUrl=='/login'||fullUrl=='/register'||fullUrl=="/"||fullUrl=="/user/authen
     };
     next();
   } catch (err) {
+      console.log(err);
     return res.status(500).json(err.toString());
   }
 };

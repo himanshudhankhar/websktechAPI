@@ -10,7 +10,7 @@ const generateToken = (req,res, id, firstname) => {
 console.log(token);
 let options = {
     maxAge: expiration, // would expire after 15 minutes
-    httpOnly: true, // The cookie only accessible by the web server
+    httpOnly: false,
     signed: true // Indicates if the cookie should be signed
 }
   res.cookie('token',token,options);

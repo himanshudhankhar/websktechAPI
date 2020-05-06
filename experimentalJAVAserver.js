@@ -7,7 +7,7 @@ var cookieSession = require('cookie-session')
 var express = require('express')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const verifyToken = require('./verifyJWT');
+const verifyToken = require('./verifyJWTExperimental');
 const loginController = require('./loginController');
 require('dotenv').config() //to load variables in process.env from a .env file
 
@@ -44,21 +44,26 @@ app.use(cookieParser());
 //this is used to create a session of every request so that session details 
 //can be made available in each and every api 
 //by accessing req.session or req.sessionOptions
-app.use(cookieSession({
-  name: 'session',
-  keys: ["seckretkey"],
+// app.use(cookieSession({
+//   name: 'session',
+//   keys: ["seckretkey"],
 
-  // Cookie Options
-  maxAge:  process.env.NODE_ENV=="development"? 1000 : 30*60*1000, // 30 minutes
-  httpOnly:false   
-}));
+//   // Cookie Options
+//   maxAge:  process.env.NODE_ENV=="development"? 1000 : 30*60*1000, // 30 minutes
+//   httpOnly:false   
+// }));
 
 
 
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-
+app.use(verifyToken);
+app.post('/services/getAll',(req,res)=>{
+  res.send({
+    success: true
+  });
+})
 
 app.post('/login',(req,res)=>{
 loginController(req,res);
@@ -77,9 +82,8 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.use(verifyToken);
 
 
-const PORT = process.env.PORT || 5002;
+const PORT =   50002;
 
 app.listen(PORT, () => console.log(`Java Server started at port ${PORT}`));

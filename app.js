@@ -6,6 +6,7 @@ var path=require("path");
 var bodyParser = require('body-parser');
 var app = express()
 const jwt = require('jsonwebtoken');
+var forwardRequests =require('./forwardRequests');
 
 var verifyToken =require('./verifyJWT');
 
@@ -23,11 +24,11 @@ app.use(cors({
 
 }))
  
-app.use(cookieParser());
+app.use(cookieParser(secret=process.env.COOKIE_SIGN_SECRET));
 
 app.use("*",function(req,res,next){
 
-console.log('cookies',req.cookies);
+console.log('cookies',req.signedCookies);
 
 next();
 
@@ -35,17 +36,9 @@ next();
 
 
 
-app.use(express.static(path.join(__dirname, 'build')));
-
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-
 
 app.post('/user/authenticate',(req,res)=>{
   // console.log('data',req.body);
-
 //after validation of data from req.body this can be used 
 
 var id="1234";
@@ -58,7 +51,7 @@ const expiration = process.env.DB_ENV === 'testing' ?  100 : 30*60*1000;
 
  console.log(token);
 
-res.cookie('token', token, { maxAge: 30*60*1000, httpOnly: false,signed:false });
+res.cookie('token', token, { maxAge: 30*60*1000, httpOnly: false,signed:true,secret:process.env.COOKIE_SIGN_SECRET });
 
 res.send({
   id: '43321',
@@ -73,23 +66,36 @@ res.send({
 });
 
 
+app.use(verifyToken); // All requests below this code will be accessed with a certified token only
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+//all requests which didn't match above will be sent to java backenend
+
+app.use(forwardRequests);
+
+
 
 app.get('/ping',(req,res)=>{
+  
   console.log(req.cookies);
   res.send("Hi");
 });
 
+ 
 
 
 //All requests except the above ones will have to verify the token 
-app.use(verifyToken);
 
 
 //all requests except the above ones should be forwarded to the java spring server
 //so that there can be some communication between the two
-app.all('*',(req,res)=>{
-  res.redirect(process.env.JAVA_SERVER_ADDR);
-});
+
+
   
 
 const PORT = process.env.PORT || 5000;
